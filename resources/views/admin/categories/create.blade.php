@@ -1,22 +1,72 @@
-<x-app-layout>
+@extends('layouts.admin')
 
-    <div class="py-12">
+@section('title', 'Add Category')
+@section('page-title', 'Add Category')
 
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+@section('content')
 
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+<div class="container-fluid px-0">
 
-                <h1 class="text-2xl font-bold mb-6">
-                    Add Category
-                </h1>
+    {{-- Page Header --}}
 
-                <form method="POST" action="{{ route('admin.categories.store') }}">
+    <div class="container-fluid px-0">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h4 class="fw-bold mb-0">
+                Add Category
+            </h4>
+
+            <a href="{{ route('admin.categories.index') }}"
+                class="btn btn-secondary">
+                Back
+            </a>
+
+        </div>
+
+
+        {{-- Validation Errors --}}
+        @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+
+            </ul>
+
+        </div>
+
+        @endif
+
+
+        {{-- Category Form --}}
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-4">
+
+                <form
+                    method="POST"
+                    action="{{ route('admin.categories.store') }}">
 
                     @csrf
-                    <div class="flex flex-col md:flex-row gap-4">
-                        <div class="w-full md:w-1/2">
-                            <label for="name" class="block mb-2">
+
+
+                    <div class="row g-3">
+
+                        {{-- Category Name --}}
+                        <div class="col-md-6">
+
+                            <label
+                                for="name"
+                                class="form-label">
+
                                 Category Name
+                                <span class="text-danger">*</span>
+
                             </label>
 
                             <input
@@ -24,19 +74,30 @@
                                 id="name"
                                 name="name"
                                 value="{{ old('name') }}"
-                                class="w-full border rounded p-2"
+                                class="form-control"
+                                placeholder="Enter category name"
                                 required>
 
                             @error('name')
-                            <p class="text-red-600 text-sm mt-1">
+
+                            <div class="text-danger small mt-1">
                                 {{ $message }}
-                            </p>
+                            </div>
+
                             @enderror
+
                         </div>
 
-                        <div class="w-full md:w-1/2">
-                            <label for="slug" class="block mb-2">
+
+                        {{-- Slug --}}
+                        <div class="col-md-6">
+
+                            <label
+                                for="slug"
+                                class="form-label">
+
                                 Slug
+
                             </label>
 
                             <input
@@ -44,23 +105,37 @@
                                 id="slug"
                                 name="slug"
                                 value="{{ old('slug') }}"
-                                class="w-full border rounded p-2 bg-gray-100"
+                                class="form-control bg-light"
+                                placeholder="category-slug"
                                 readonly>
+
+                            <small class="text-muted">
+                                Slug will be generated automatically.
+                            </small>
+
                         </div>
+
                     </div>
 
-                    <div class="mt-6">
+
+                    {{-- Buttons --}}
+                    <div class="mt-4">
 
                         <button
                             type="submit"
-                            class="px-4 py-2 bg-green-800 hover:bg-green-700 text-white rounded">
+                            class="btn btn-danger">
+
                             Save Category
+
                         </button>
+
 
                         <a
                             href="{{ route('admin.categories.index') }}"
-                            class="ml-3 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            class="btn btn-secondary ms-2">
+
                             Cancel
+
                         </a>
 
                     </div>
@@ -73,10 +148,11 @@
 
     </div>
 
+
+    {{-- Slug Script --}}
     <script>
         const nameInput = document.getElementById('name');
         const slugInput = document.getElementById('slug');
-
 
         nameInput.addEventListener('input', function() {
 
@@ -86,8 +162,10 @@
                 .replace(/[^a-z0-9\s-]/g, '')
                 .replace(/\s+/g, '-')
                 .replace(/-+/g, '-');
+
             slugInput.value = slug;
+
         });
     </script>
 
-</x-app-layout>
+    @endsection

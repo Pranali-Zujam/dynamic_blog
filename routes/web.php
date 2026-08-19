@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\BlogController as ControllersBlogController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +35,20 @@ Route::middleware(['auth', 'admin'])
 
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('tags', TagController::class)->except(['show']);
+        Route::resource('blogs', BlogController::class)->except(['show']);
     });
+
+// user routes
+Route::get('/blogs', [ControllersBlogController::class, 'index'])->name('blogs.index');
+
+Route::get('/blogs/{slug}', [ControllersBlogController::class, 'show'])->name('blogs.show');
+
+
+// google routes
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
+
+
 
 
 

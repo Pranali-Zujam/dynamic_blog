@@ -1,23 +1,59 @@
-<x-app-layout>
+@extends('layouts.admin')
 
-    <div class="py-12">
+@section('title', 'Edit Tag')
+@section('page-title', 'Edit Tag')
 
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+@section('content')
 
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+<div class="container-fluid px-0">
 
-                <h1 class="text-2xl font-bold mb-6">
-                    Edit Tag
-                </h1>
+    <div class="mb-4">
 
-                <form method="POST"
-                    action="{{ route('admin.tags.update', $tag) }}">
+        <h4 class="fw-bold mb-1">
+            Edit Tag
+        </h4>
 
-                    @csrf
-                    @method('PUT')
+        <p class="text-muted mb-0">
+            Update the tag information.
+        </p>
 
-                    <div>
-                        <label class="block mb-2">
+    </div>
+
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-4">
+
+            <form
+                method="POST"
+                action="{{ route('admin.tags.update', $tag) }}">
+
+                @csrf
+                @method('PUT')
+
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
                             Tag Name
                         </label>
 
@@ -25,38 +61,40 @@
                             type="text"
                             name="name"
                             value="{{ old('name', $tag->name) }}"
-                            class="w-full border rounded p-2"
+                            class="form-control"
                             required>
 
-                        @error('name')
-                        <p class="text-red-600 text-sm mt-1">
-                            {{ $message }}
-                        </p>
-                        @enderror
                     </div>
 
-                    <div class="mt-6">
+                </div>
 
-                        <button
-                            type="submit"
-                            class="px-4 py-2 bg-green-800 hover:bg-green-700 text-white rounded">
-                            Update Tag
-                        </button>
 
-                        <a
-                            href="{{ route('admin.tags.index') }}"
-                            class="ml-3 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                            Cancel
-                        </a>
+                <div class="mt-4">
 
-                    </div>
+                    <a
+                        href="{{ route('admin.tags.index') }}"
+                        class="btn btn-secondary">
 
-                </form>
+                        Cancel
 
-            </div>
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger">
+
+                        Update Tag
+
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
 
     </div>
 
-</x-app-layout>
+</div>
+
+@endsection
