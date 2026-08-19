@@ -12,7 +12,7 @@ class CategoryController extends Controller
     // Display a listing of the resource
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::latest()->get();
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -63,7 +63,7 @@ class CategoryController extends Controller
 
         $category->update([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'slug' => $request->slug ?? Str::slug($request->name),
         ]);
 
         return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
