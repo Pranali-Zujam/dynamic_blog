@@ -29,27 +29,7 @@
         </a>
 
     </div>
-
-
-    {{-- Success --}}
-    @if(session('success'))
-
-        <div
-            class="alert alert-success alert-dismissible fade show">
-
-            {{ session('success') }}
-
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-            </button>
-
-        </div>
-
-    @endif
-
-
+ 
     {{-- Table --}}
     <div class="card border-0 shadow-sm">
 
@@ -200,11 +180,3 @@
 
 @endsection
 
-<script>
-    let clearMsg = document.getElementById('clearMsg');
-    if (clearMsg) {
-        setTimeout(() => {
-            clearMsg.style.display = 'none';
-        }, 3000);
-    }
-</script>

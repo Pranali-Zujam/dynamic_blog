@@ -5,32 +5,36 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\Comment;
+use App\Models\Like;
 use App\Models\Tag;
-use Illuminate\Http\Request;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::latest()->paginate(10);
-
-        $categories = Category::latest()->get();
-
-        $tags = Tag::latest()->get();
-
         $totalBlogs = Blog::count();
-
         $totalCategories = Category::count();
-
         $totalTags = Tag::count();
+        $totalViews = Blog::sum('views');
+        $totalLikes = Like::count();
+        $totalComments = Comment::count();
+        $totalUsers = User::count();
+
+        $topBlogs = Blog::orderByDesc('views')
+            ->take(10)
+            ->get();
 
         return view('admin.dashboard', compact(
-            'blogs',
-            'categories',
-            'tags',
             'totalBlogs',
             'totalCategories',
-            'totalTags'
+            'totalTags',
+            'totalViews',
+            'totalLikes',
+            'totalComments',
+            'totalUsers',
+            'topBlogs'
         ));
     }
 }

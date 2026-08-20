@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+        content="width=device-width, initial-scale=1.0">
 
     <title>
         @yield('title', 'Admin Dashboard') - Dynamic Blog
@@ -23,7 +23,6 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-
         body {
             background: #f5f6f8;
             font-family: Arial, sans-serif;
@@ -66,7 +65,7 @@
             font-weight: 700;
 
             border-bottom:
-                1px solid rgba(255,255,255,.1);
+                1px solid rgba(255, 255, 255, .1);
         }
 
         .sidebar-brand i {
@@ -116,8 +115,7 @@
             color: #fff;
 
             box-shadow:
-                0 4px 10px
-                rgba(220,53,69,.25);
+                0 4px 10px rgba(220, 53, 69, .25);
         }
 
         .sidebar-menu i {
@@ -297,7 +295,6 @@
             }
 
         }
-
     </style>
 
     @stack('styles')
@@ -307,162 +304,179 @@
 
 <body>
 
-<div class="admin-wrapper">
+    <div class="admin-wrapper">
 
 
-    {{-- =========================
+        {{-- =========================
          SIDEBAR
     ========================= --}}
 
-    <aside
-        class="sidebar"
-        id="sidebar">
+        <aside
+            class="sidebar"
+            id="sidebar">
 
-        <div class="sidebar-brand">
+            <div class="sidebar-brand">
 
-            <i class="bi bi-journal-text me-2"></i>
+                <i class="bi bi-journal-text me-2"></i>
 
-            Dynamic Blog
-
-        </div>
-
-
-        <nav class="sidebar-menu">
-
-
-            {{-- Dashboard --}}
-
-            <a
-                href="{{ route('admin.dashboard') }}"
-                class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-
-                <i class="bi bi-speedometer2"></i>
-
-                Dashboard
-
-            </a>
-
-
-            {{-- Blogs --}}
-
-            <a
-                href="{{ route('admin.blogs.index') }}"
-                class="{{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
-
-                <i class="bi bi-file-earmark-text"></i>
-
-                Blogs
-
-            </a>
-
-
-            {{-- Categories --}}
-
-            <a
-                href="{{ route('admin.categories.index') }}"
-                class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-
-                <i class="bi bi-folder"></i>
-
-                Categories
-
-            </a>
-
-
-            {{-- Tags --}}
-
-            <a
-                href="{{ route('admin.tags.index') }}"
-                class="{{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
-
-                <i class="bi bi-tags"></i>
-
-                Tags
-
-            </a>
-
-
-            <hr class="border-secondary">
-         
-
-            {{-- Logout --}}
-
-            <form
-                method="POST"
-                action="{{ route('logout') }}">
-
-                @csrf
-
-                <button
-                    type="submit"
-                    class="logout-button">
-
-                    <i class="bi bi-box-arrow-right"></i>
-
-                    Logout
-
-                </button>
-
-            </form>
-
-
-        </nav>
-
-    </aside>
-
-
-    {{-- =========================
-         MAIN CONTENT
-    ========================= --}}
-
-    <main class="main-content">
-
-
-        {{-- TOP NAVBAR --}}
-
-        <header class="top-navbar">
-
-
-            <div
-                class="d-flex align-items-center gap-3">
-
-
-                <button
-                    class="btn btn-outline-secondary
-                           mobile-menu"
-                    onclick="toggleSidebar()">
-
-                    <i class="bi bi-list"></i>
-
-                </button>
-
-
-                <h1 class="page-title">
-
-                    @yield(
-                        'page-title',
-                        'Dashboard'
-                    )
-
-                </h1>
-
+                Dynamic Blog
 
             </div>
 
 
-            {{-- USER --}}
+            <nav class="sidebar-menu">
 
-            <div class="user-area">
+                {{-- Dashboard --}}
+                <a
+                    href="{{ route('admin.dashboard') }}"
+                    class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+
+                    <i class="bi bi-speedometer2"></i>
+
+                    Dashboard
+
+                </a>
 
 
-                @if(auth()->user()->avatar)
+                {{-- Blogs --}}
+                <a
+                    href="{{ route('admin.blogs.index') }}"
+                    class="{{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
+
+                    <i class="bi bi-file-earmark-text"></i>
+
+                    Blogs
+
+                </a>
+                {{-- Comments --}}
+                <a
+                    href="{{ route('admin.comments.index') }}"
+                    class="{{ request()->routeIs('admin.comments.*') ? 'active' : '' }}">
+
+                    <i class="bi bi-chat-square-text"></i>
+
+                    Comments
+
+                </a>
+
+
+                {{-- Categories --}}
+                <a
+                    href="{{ route('admin.categories.index') }}"
+                    class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+
+                    <i class="bi bi-folder"></i>
+
+                    Categories
+
+                </a>
+
+
+                {{-- Tags --}}
+                <a
+                    href="{{ route('admin.tags.index') }}"
+                    class="{{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
+
+                    <i class="bi bi-tags"></i>
+
+                    Tags
+
+                </a>
+
+
+                {{-- Users --}}
+                <a
+                    href="{{ route('admin.users.index') }}"
+                    class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+
+                    <i class="bi bi-people"></i>
+
+                    Users
+
+                </a>
+
+
+                <hr class="border-secondary">
+
+
+                {{-- Logout --}}
+                <form
+                    method="POST"
+                    action="{{ route('logout') }}">
+
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="logout-button">
+
+                        <i class="bi bi-box-arrow-right"></i>
+
+                        Logout
+
+                    </button>
+
+                </form>
+
+
+
+            </nav>
+
+        </aside>
+
+
+        {{-- =========================
+         MAIN CONTENT
+    ========================= --}}
+
+        <main class="main-content">
+
+
+            {{-- TOP NAVBAR --}}
+
+            <header class="top-navbar">
+
+
+                <div
+                    class="d-flex align-items-center gap-3">
+
+
+                    <button
+                        class="btn btn-outline-secondary
+                           mobile-menu"
+                        onclick="toggleSidebar()">
+
+                        <i class="bi bi-list"></i>
+
+                    </button>
+
+
+                    <h1 class="page-title">
+
+                        @yield(
+                        'page-title',
+                        'Dashboard'
+                        )
+
+                    </h1>
+
+
+                </div>
+
+
+                {{-- USER --}}
+
+                <div class="user-area">
+
+
+                    @if(auth()->user()->avatar)
 
                     <img
                         src="{{ auth()->user()->avatar }}"
                         class="user-avatar"
                         alt="User">
 
-                @else
+                    @else
 
                     <div
                         class="user-avatar
@@ -482,94 +496,93 @@
 
                     </div>
 
-                @endif
+                    @endif
 
 
-                <span class="fw-semibold">
+                    <span class="fw-semibold">
 
-                    {{ auth()->user()->name }}
+                        {{ auth()->user()->name }}
 
-                </span>
+                    </span>
 
-            </div>
+                </div>
 
-        </header>
-
-
-        {{-- PAGE CONTENT --}}
-
-        <section class="content-area">
+            </header>
 
 
-            @if(session('success'))
+            {{-- PAGE CONTENT --}}
 
-                <div
+            <section class="content-area">
+
+
+                @if(session('success'))
+
+                <div id="clearMsg"
                     class="alert alert-success
-                           alert-dismissible fade show">
+                    alert-dismissible fade show">
 
                     {{ session('success') }}
 
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                    </button>
-
                 </div>
+                @endif
 
-            @endif
 
-
-            @if(session('error'))
+                @if(session('error'))
 
                 <div
                     class="alert alert-danger
-                           alert-dismissible fade show">
+                           alert-dismissible fade show" id="clearMsg">
 
                     {{ session('error') }}
 
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert">
-                    </button>
+
 
                 </div>
 
-            @endif
+                @endif
 
 
-            @yield('content')
+                @yield('content')
 
 
-        </section>
+            </section>
 
-    </main>
+        </main>
 
-</div>
-
-
-{{-- Bootstrap JS --}}
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+    </div>
 
 
-<script>
+    {{-- Bootstrap JS --}}
 
-function toggleSidebar()
-{
-    document
-        .getElementById('sidebar')
-        .classList
-        .toggle('show');
-}
-
-</script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
 
 
-@stack('scripts')
+    <script>
+        function toggleSidebar() {
+            document
+                .getElementById('sidebar')
+                .classList
+                .toggle('show');
+        }
+    </script>
+    <script>
+        let clearMsg = document.getElementById('clearMsg');
+
+        if (clearMsg) {
+
+            setTimeout(() => {
+
+                clearMsg.style.display = 'none';
+
+            }, 3000);
+
+        }
+    </script>
+
+
+    @stack('scripts')
 
 </body>
 

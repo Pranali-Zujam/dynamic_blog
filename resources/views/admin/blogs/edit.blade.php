@@ -1,38 +1,33 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Blog')
-@section('page-title', 'Create Blog')
+@section('title', 'Edit Blog')
+@section('page-title', 'Edit Blog')
 
 @section('content')
 
 <div class="container-fluid px-0">
 
-    <div class="mb-4">
-        <h4 class="fw-bold mb-1">Create Blog</h4>
-        <p class="text-muted mb-0">
-            Add a new blog post.
-        </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h4 class="fw-bold mb-0">
+            Edit Blog
+        </h4>
+
+        <a href="{{ route('admin.blogs.index') }}"
+            class="btn btn-secondary">
+            Back
+        </a>
+
     </div>
-
-    @if($errors->any())
-
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-
-    @endif
-
 
     <form
         method="POST"
-        action="{{ route('admin.blogs.store') }}"
+        action="{{ route('admin.blogs.update', $blog->id) }}"
         enctype="multipart/form-data">
 
         @csrf
+
+        @method('PUT')
 
 
         {{-- Blog Details --}}
@@ -58,7 +53,7 @@
                             type="text"
                             name="title"
                             id="title"
-                            value="{{ old('title') }}"
+                            value="{{ old('title', $blog->title) }}"
                             class="form-control"
                             placeholder="Enter blog title"
                             required>
@@ -84,13 +79,13 @@
 
                             @foreach($categories as $category)
 
-                                <option
-                                    value="{{ $category->id }}"
-                                    {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                            <option
+                                value="{{ $category->id }}"
+                                {{ old('category_id', $blog->category_id) == $category->id ? 'selected' : '' }}>
 
-                                    {{ $category->name }}
+                                {{ $category->name }}
 
-                                </option>
+                            </option>
 
                             @endforeach
 
@@ -110,14 +105,20 @@
                             name="status"
                             class="form-select">
 
-                            <option value="draft"
-                                {{ old('status') == 'draft' ? 'selected' : '' }}>
+                            <option
+                                value="draft"
+                                {{ old('status', $blog->status) == 'draft' ? 'selected' : '' }}>
+
                                 Draft
+
                             </option>
 
-                            <option value="published"
-                                {{ old('status') == 'published' ? 'selected' : '' }}>
+                            <option
+                                value="published"
+                                {{ old('status', $blog->status) == 'published' ? 'selected' : '' }}>
+
                                 Published
+
                             </option>
 
                         </select>
@@ -136,7 +137,7 @@
                             type="text"
                             name="slug"
                             id="slug"
-                            value="{{ old('slug') }}"
+                            value="{{ old('slug', $blog->slug) }}"
                             class="form-control"
                             placeholder="blog-title">
 
@@ -153,7 +154,7 @@
                         <input
                             type="text"
                             name="seo_title"
-                            value="{{ old('seo_title') }}"
+                            value="{{ old('seo_title', $blog->seo_title) }}"
                             class="form-control"
                             placeholder="SEO title">
 
@@ -170,7 +171,7 @@
                         <input
                             type="url"
                             name="canonical_url"
-                            value="{{ old('canonical_url') }}"
+                            value="{{ old('canonical_url', $blog->canonical_url) }}"
                             class="form-control"
                             placeholder="https://example.com/blog">
 
@@ -189,7 +190,7 @@
                             rows="4"
                             class="form-control"
                             placeholder="Short description"
-                            required>{{ old('description') }}</textarea>
+                            required>{{ old('description', $blog->description) }}</textarea>
 
                     </div>
 
@@ -200,13 +201,12 @@
                         <label class="form-label">
                             Content <span class="text-danger">*</span>
                         </label>
-
                         <textarea
                             name="content"
-                            rows="4"
+                            id="blog-content"
+                            rows="8"
                             class="form-control"
-                            placeholder="Write blog content..."
-                            required>{{ old('content') }}</textarea>
+                            placeholder="Write blog content...">{{ old('content', $blog->content) }}</textarea>
 
                     </div>
 
@@ -228,11 +228,27 @@
 
                 <div class="row g-3">
 
+
+                    {{-- Thumbnail --}}
                     <div class="col-md-6">
 
                         <label class="form-label">
                             Thumbnail
                         </label>
+
+                        @if($blog->thumbnail)
+
+                        <div class="mb-2">
+
+                            <img
+                                src="{{ asset('storage/' . $blog->thumbnail) }}"
+                                alt="{{ $blog->title }}"
+                                class="img-thumbnail"
+                                style="max-height: 120px;">
+
+                        </div>
+
+                        @endif
 
                         <input
                             type="file"
@@ -240,20 +256,43 @@
                             class="form-control"
                             accept="image/*">
 
+                        <small class="text-muted">
+                            Leave empty to keep the existing thumbnail.
+                        </small>
+
                     </div>
 
 
+                    {{-- Banner --}}
                     <div class="col-md-6">
 
                         <label class="form-label">
                             Banner
                         </label>
 
+                        @if($blog->banner)
+
+                        <div class="mb-2">
+
+                            <img
+                                src="{{ asset('storage/' . $blog->banner) }}"
+                                alt="{{ $blog->title }}"
+                                class="img-thumbnail"
+                                style="max-height: 120px; max-width: 100%;">
+
+                        </div>
+
+                        @endif
+
                         <input
                             type="file"
                             name="banner"
                             class="form-control"
                             accept="image/*">
+
+                        <small class="text-muted">
+                            Leave empty to keep the existing banner.
+                        </small>
 
                     </div>
 
@@ -275,6 +314,7 @@
 
                 <div class="row g-3">
 
+
                     {{-- SEO Description --}}
                     <div class="col-md-6">
 
@@ -286,7 +326,7 @@
                             name="seo_description"
                             rows="4"
                             class="form-control"
-                            placeholder="SEO description">{{ old('seo_description') }}</textarea>
+                            placeholder="SEO description">{{ old('seo_description', $blog->seo_description) }}</textarea>
 
                     </div>
 
@@ -302,7 +342,7 @@
                             name="schema_markup"
                             rows="4"
                             class="form-control"
-                            placeholder="Enter JSON schema">{{ old('schema_markup') }}</textarea>
+                            placeholder="Enter JSON schema">{{ old('schema_markup', $blog->schema_markup) }}</textarea>
 
                     </div>
 
@@ -322,33 +362,44 @@
                     Tags
                 </h5>
 
+
+                @php
+
+                $selectedTags = old(
+                'tags',
+                $blog->tags->pluck('id')->toArray()
+                );
+
+                @endphp
+
+
                 @forelse($tags as $tag)
 
-                    <div class="form-check form-check-inline">
+                <div class="form-check form-check-inline">
 
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="tags[]"
-                            value="{{ $tag->id }}"
-                            id="tag{{ $tag->id }}"
-                            {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}>
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="tags[]"
+                        value="{{ $tag->id }}"
+                        id="tag{{ $tag->id }}"
+                        {{ in_array($tag->id, $selectedTags) ? 'checked' : '' }}>
 
-                        <label
-                            class="form-check-label"
-                            for="tag{{ $tag->id }}">
+                    <label
+                        class="form-check-label"
+                        for="tag{{ $tag->id }}">
 
-                            {{ $tag->name }}
+                        {{ $tag->name }}
 
-                        </label>
+                    </label>
 
-                    </div>
+                </div>
 
                 @empty
 
-                    <span class="text-muted">
-                        No tags available.
-                    </span>
+                <span class="text-muted">
+                    No tags available.
+                </span>
 
                 @endforelse
 
@@ -372,7 +423,7 @@
                 type="submit"
                 class="btn btn-danger">
 
-                Create Blog
+                Update Blog
 
             </button>
 
@@ -383,21 +434,132 @@
 </div>
 
 
+{{-- Slug --}}
 <script>
+    document.getElementById('title').addEventListener('input', function() {
 
-document.getElementById('title').addEventListener('input', function () {
+        let slug = this.value
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
 
-    let slug = this.value
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
+        document.getElementById('slug').value = slug;
 
-    document.getElementById('slug').value = slug;
-
-});
-
+    });
 </script>
+@push('scripts')
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const editorElement = document.getElementById('blog-content');
+
+        if (!editorElement) {
+            return;
+        }
+
+        CKEDITOR.ClassicEditor
+            .create(editorElement, {
+
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'underline',
+                        'link',
+                        '|',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'alignment',
+                        'blockQuote',
+                        'uploadImage',
+                        'insertTable',
+                        '|',
+                        'sourceEditing',
+                        '|',
+                        'undo',
+                        'redo'
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+
+                image: {
+                    toolbar: [
+                        'imageTextAlternative',
+                        'imageStyle:inline',
+                        'imageStyle:block',
+                        'imageStyle:side'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells'
+                    ]
+                },
+
+                simpleUpload: {
+                    uploadUrl: "{{ route('admin.blogs.content-image') }}",
+
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    }
+                },
+
+                removePlugins: [
+                    'AIAssistant',
+                    'MultiLevelList',
+                    'TableOfContents',
+                    'PasteFromOfficeEnhanced',
+                    'CaseChange',
+                    'RealTimeCollaborativeComments',
+                    'RealTimeCollaborativeTrackChanges',
+                    'RealTimeCollaborativeRevisionHistory',
+                    'PresenceList',
+                    'Comments',
+                    'TrackChanges',
+                    'TrackChangesData',
+                    'RevisionHistory',
+                    'Pagination',
+                    'WProofreader',
+                    'MathType',
+                    'SlashCommand',
+                    'DocumentOutline',
+                    'FormatPainter',
+                    'Template'
+                ]
+
+            })
+
+            .then(editor => {
+
+                console.log('CKEditor loaded successfully');
+
+                const form = editorElement.closest('form');
+
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        editor.updateSourceElement();
+                    });
+                }
+
+            })
+
+            .catch(error => {
+                console.error('CKEditor Error:', error);
+            });
+
+    });
+</script>
+
+@endpush
 
 @endsection

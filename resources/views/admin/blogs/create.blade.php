@@ -7,18 +7,18 @@
 
 <div class="container-fluid px-0">
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <h4 class="fw-bold mb-0">
-        Create Blog
-    </h4>
+        <h4 class="fw-bold mb-0">
+            Create Blog
+        </h4>
 
-    <a href="{{ route('admin.blogs.index') }}"
-       class="btn btn-secondary">
-        Back
-    </a>
+        <a href="{{ route('admin.blogs.index') }}"
+            class="btn btn-secondary">
+            Back
+        </a>
 
-</div>
+    </div>
 
     @if($errors->any())
 
@@ -209,10 +209,10 @@
 
                         <textarea
                             name="content"
-                            rows="4"
+                            id="blog-content"
+                            rows="8"
                             class="form-control"
-                            placeholder="Write blog content..."
-                            required>{{ old('content') }}</textarea>
+                            placeholder="Write blog content...">{{ old('content') }}</textarea>
 
                     </div>
 
@@ -403,5 +403,116 @@
 
     });
 </script>
+@push('scripts')
 
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const editorElement = document.getElementById('blog-content');
+
+        if (!editorElement) {
+            return;
+        }
+
+        CKEDITOR.ClassicEditor
+            .create(editorElement, {
+
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'underline',
+                        'link',
+                        '|',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'alignment',
+                        'blockQuote',
+                        'uploadImage',
+                        'insertTable',
+                        '|',
+                        'sourceEditing',
+                        '|',
+                        'undo',
+                        'redo'
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+
+                image: {
+                    toolbar: [
+                        'imageTextAlternative',
+                        'imageStyle:inline',
+                        'imageStyle:block',
+                        'imageStyle:side'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells'
+                    ]
+                },
+
+                simpleUpload: {
+                    uploadUrl: "{{ route('admin.blogs.content-image') }}",
+
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    }
+                },
+
+                removePlugins: [
+                    'AIAssistant',
+                    'MultiLevelList',
+                    'TableOfContents',
+                    'PasteFromOfficeEnhanced',
+                    'CaseChange',
+                    'RealTimeCollaborativeComments',
+                    'RealTimeCollaborativeTrackChanges',
+                    'RealTimeCollaborativeRevisionHistory',
+                    'PresenceList',
+                    'Comments',
+                    'TrackChanges',
+                    'TrackChangesData',
+                    'RevisionHistory',
+                    'Pagination',
+                    'WProofreader',
+                    'MathType',
+                    'SlashCommand',
+                    'DocumentOutline',
+                    'FormatPainter',
+                    'Template'
+                ]
+
+            })
+
+            .then(editor => {
+
+                console.log('CKEditor loaded successfully');
+
+                const form = editorElement.closest('form');
+
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        editor.updateSourceElement();
+                    });
+                }
+
+            })
+
+            .catch(error => {
+                console.error('CKEditor Error:', error);
+            });
+
+    });
+</script>
+
+@endpush
 @endsection

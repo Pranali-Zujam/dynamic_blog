@@ -19,15 +19,15 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'google_id',
-    'email_verified_at',
-    'role',
-    'avatar',
-];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'google_id',
+        'email_verified_at',
+        'role',
+        'avatar',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -57,5 +57,14 @@ protected $fillable = [
     public function blogs(): HasMany
     {
         return $this->hasMany(Blog::class);
+    }
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

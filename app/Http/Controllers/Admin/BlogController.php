@@ -17,28 +17,57 @@ class BlogController extends Controller
 
     public function index(Request $request)
     {
-        $query = Blog::with(['category', 'user', 'tags']);
+        $query = Blog::with(['category', 'tags', 'user']);
 
-        // search by title , status, category
+        // Search
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            });
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
         }
 
+        // Sorting
+        switch ($request->get('sort')) {
 
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+
+            case 'az':
+                $query->orderBy('title', 'asc');
+                break;
+
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
         }
 
-        $blogs = $query->latest()->paginate(10)->withQueryString();
+        // Per page
+        $perPage = (int) $request->get('per_page', 10);
+
+        if (!in_array($perPage, [10, 20, 30, 40, 50])) {
+            $perPage = 10;
+        }
+
+        $blogs = $query
+            ->paginate($perPage)
+            ->withQueryString();
 
         $categories = Category::orderBy('name')->get();
 
-
-        return view('admin.blogs.index', compact('blogs', 'categories'));
+        return view('admin.blogs.index', compact(
+            'blogs',
+            'categories'
+        ));
     }
 
 
@@ -296,5 +325,32 @@ class BlogController extends Controller
     {
         $blog->delete();
         return redirect()->route('admin.blogs.index')->with('success', 'Blog deleted successfully.');
+    }
+
+    public function contentImage(Request $request)
+    {
+        $request->validate([
+            'upload' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $file = $request->file('upload');
+
+        $filename = Str::slug(
+            pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)
+        );
+
+        $extension = $file->getClientOriginalExtension();
+
+        $filename = $filename . '-' . time() . '.' . $extension;
+
+        $path = $file->storeAs(
+            'blogs/content',
+            $filename,
+            'public'
+        );
+
+        return response()->json([
+            'url' => asset('storage/' . $path),
+        ]);
     }
 }

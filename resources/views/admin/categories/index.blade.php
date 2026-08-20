@@ -24,27 +24,6 @@
 
     </div>
 
-
-    {{-- Success Message --}}
-    @if(session('success'))
-
-        <div
-            id="successMessage"
-            class="alert alert-success alert-dismissible fade show">
-
-            {{ session('success') }}
-
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-            </button>
-
-        </div>
-
-    @endif
-
-
     {{-- Categories --}}
     <div class="card border-0 shadow-sm">
 
@@ -194,11 +173,3 @@
 
 @endsection
 
-<script>
-    let clearMsg = document.getElementById('clearMsg');
-    if (clearMsg) {
-        setTimeout(() => {
-            clearMsg.style.display = 'none';
-        }, 3000);
-    }
-</script>

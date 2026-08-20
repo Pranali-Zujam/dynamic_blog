@@ -28,9 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
 
+        return redirect()->route('blogs.index');
+    }
     /**
      * Destroy an authenticated session.
      */
@@ -41,7 +44,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

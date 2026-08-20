@@ -9,13 +9,10 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
-
     public function redirect()
     {
-
         return Socialite::driver('google')->redirect();
     }
-
 
     public function callback()
     {
@@ -41,7 +38,12 @@ class GoogleController extends Controller
         }
 
         Auth::login($user);
+       
 
-        return redirect()->route('dashboard');
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('blogs.index');
     }
 }
